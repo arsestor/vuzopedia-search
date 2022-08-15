@@ -8,10 +8,16 @@ r = requests.get(URL_TEMPLATE)
 soup = bs(r.text, 'html.parser')
 unis = soup.find_all('div', class_="vuzesfullnorm")
 for uni in unis:
-    try:
-        scores, places = [i.text for i in uni.find_all('div', class_='col-md-4 info')[1].find_all('a', class_='tooltipq')[::2]]
-        print(f"Название: {uni.img['alt'][8:]}")
-        print(f"Ссылка: {uni.a['href']}")
-        print(f"Бюджет: {[scores[3:6], places[:-38]]}\n")
-    except:
-        pass
+        name_info = uni.img['alt'][8:]
+        print(f"Название: {name_info}")
+
+        link_info = uni.a['href']
+        print(f"Ссылка: {link_info}")
+
+        budget_info = [i for i in uni.find_all('div', class_='col-md-4 info')][1].find_all('a', class_='tooltipq')
+        if budget_info != []:
+            budget_info = [budget_info[0].text[budget_info[0].text.find('от')+3:budget_info[0].text.find('минимальный')],
+                           budget_info[-1].text[:budget_info[-1].text.find('мест')-1]]
+            print(f"Бюджет: {budget_info}\n")
+        else:
+            print(f"Бюджет: нет\n")
